@@ -1625,7 +1625,7 @@
 ;; - Do not use (finally (RETURN ,winner)) either, as that would
 ;;   always return accumulated value, even in case of ... INTO nil.
 (deftest defmacro-clause.2
-    (defmacro-clause (FINDING expr MAXING func &optional INTO var)
+    (defmacro-clause (finding expr maxing func &optional into var)
       "Iterate paper demo example"
       (let ((max-val (gensym "MAX-VAL"))
 	    (temp1 (gensym "EL"))
@@ -1639,7 +1639,7 @@
 	    (when (or (null ,max-val) (> ,temp2 ,max-val))
 	      (setq ,winner ,temp1 ,max-val ,temp2)))
 	  #|(finally (return ,winner))|# )))
-  (FINDING expr MAXING func &optional INTO var))
+  (finding expr maxing func &optional into var))
 
 (deftest maxing.1
     (iter (for i in-vector #(1 5 3))

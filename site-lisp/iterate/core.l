@@ -1492,7 +1492,7 @@ Evaluate (iterate:display-iterate-clauses) for an overview of clauses"
 	     ',clause-template)))))
 
   (defun make-function-name (req-syms)
-    (let ((req-string "CLAUSE-"))
+    (let ((req-string "clause-"))
       (dolist (sym req-syms)
 	(setq req-string (concatenate 'string req-string (symbol-name sym) "-")))
       (gentemp req-string)))
