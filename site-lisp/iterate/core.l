@@ -1301,8 +1301,10 @@ Evaluate (iterate:display-iterate-clauses) for an overview of clauses"
 	  (index-add nil (cdr entry) index2)
 	  (setf (cdr entry) index2)))))
      (t
-      (bug "install-clause-info-1: index is broken")))))
-	
+      (bug "install-clause-info-1: index is broken~
+            ~%keywords : ~S~%index : ~S~%info : ~S~%"
+	   keywords index info)))))
+
 
 (defun build-index (keywords info)
   (if (null keywords)
