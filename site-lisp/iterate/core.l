@@ -516,11 +516,11 @@
   (defun bang-var? (sym)
     (let ((name (symbol-name sym)))
       (and (>= (length name) 2)
-	   (char= (char (symbol-name sym) 0) #\!))))
+	   (char= (char name 0) #\!))))
 
   (defun bang-var-num (sym)
     (let ((num (parse-integer (symbol-name sym) :start 1)))
-      (if (< num 0)
+      (if (< num 1)
 	  (error "#L: ~a is not a valid variable specifier" sym)
 	num)))
 
