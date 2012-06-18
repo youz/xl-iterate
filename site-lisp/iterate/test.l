@@ -1030,13 +1030,15 @@
   (-1 -2 -1 1 -1 3 -1 5))
 
 (deftest collect.multiple.1
-    (iter (for i from 1 to 10)
-	  (collect i into nums)
-	  (collect (sqrt i) into nums)
-	  (finally (return nums)))
-  #.(loop for i from 1 to 10
-	  collect i
-	  collect (sqrt i)))
+    (every #'=
+	   (iter (for i from 1 to 10)
+	     (collect i into nums)
+	     (collect (sqrt i) into nums)
+	     (finally (return nums)))
+	   (loop for i from 1 to 10
+	     collect i
+	     collect (sqrt i)))
+  t)
 
 (deftest collect.type.string.1
     (locally (declare (optimize safety (debug 2) (speed 0) (space 1)))
