@@ -397,6 +397,12 @@
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun bug (format-string &rest args)
+    (apply #'format
+	   *error-output*
+	   (concatenate 'string "Bug in Iterate: " format-string)
+	   args))
+
 
 ;;; Clause-info structures, which are put in the clause index.
   (defstruct clause-info
@@ -3569,12 +3575,6 @@ e.g. (DSETQ (VALUES (a . b) nil c) form)"
 	   (and (boundp' *clause*) *clause*)
 	   args)))
 
-
-(defun bug (format-string &rest args)
-  (apply #'format 
-	 *error-output*
-	 (concatenate 'string "Bug in Iterate: " format-string)
-	 args))
 
 ;;; I need something that's a cross between gensym and gentemp...
 
