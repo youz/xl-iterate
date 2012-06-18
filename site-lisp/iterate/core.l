@@ -3155,8 +3155,7 @@ e.g. (DSETQ (VALUES (a . b) nil c) form)"
   ;; Remove the "maybe quoted" idiom from documentation & code in the next release
   (when (quoted? result-type) (setq result-type (second result-type)))
   (when (quoted? place) (setq place (second place)))
-  (let ((place-string #-:xyzzy(locally (declare (optimize safety)) (symbol-name place))
-		      #+:xyzzy(symbol-name place)))
+  (let ((place-string (symbol-name place)))
     (cond
      ((string= place-string '#:end)
       (setq place 'end))
