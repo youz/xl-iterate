@@ -1583,7 +1583,7 @@ Evaluate (iterate:display-iterate-clauses) for an overview of clauses"
   ;; loop, ELSE subsequent times; 2: the variable that keeps track of
   ;; the first time.
   (let* ((var (or first-time-var 
-		  (make-var-and-binding 'first-time t :type 'boolean)))
+		  (make-var-and-binding 'first-time t)))
 	 (code (if else
 		   `(cond
 		     (,var
@@ -2357,7 +2357,7 @@ e.g. (DSETQ (VALUES (a . b) nil c) form)"
 (def-special-clause else (&rest forms)
   "Lisp forms to execute if the loop is never entered"
   (mapc #'local-binding-check forms)
-  (let ((flag (make-var-and-binding 'else t :type 'boolean)))
+  (let ((flag (make-var-and-binding 'else t)))
     (return-code :final `((when ,flag
 			    .,(walk-list forms)))
                  :body (list `(setq ,flag nil)))))
@@ -2391,7 +2391,7 @@ e.g. (DSETQ (VALUES (a . b) nil c) form)"
   "True within first iteration through the body"
   ;; Like (with ,var = t) (after-each (setq ,var nil))
   ;; except all these clauses shares a single binding.
-  (let* ((entry (make-shared-binding 'first-iteration t :type 'boolean))
+  (let* ((entry (make-shared-binding 'first-iteration t))
          (step-body nil)
          (first-usage (not (cddr entry)))
          (var (second entry)))
