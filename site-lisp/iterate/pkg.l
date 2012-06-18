@@ -7,9 +7,13 @@
 
 (provide "iterate/pkg")
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require "ansify")
+  )
+
 (defpackage #:iterate
+  (:nicknames :iter)
   (:use #:lisp)
-  (:nicknames #:iter)
   (:shadow #:while)
   (:export #:iterate #:iter #:display-iterate-clauses
 	   #:defsynonym #:dsetq #:declare-variables
@@ -23,6 +27,11 @@
 	   #:always #:never #:thereis #:finding #:collect #:collecting
 	   #:with #:while #:until #:adjoining #:nconcing #:appending
 	   #:nunioning #:unioning #:reducing #:accumulate #:accumulating))
+
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (ansify::install :iterate)
+  )
 
 (in-package :iterate)
 
