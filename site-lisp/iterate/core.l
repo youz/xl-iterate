@@ -120,6 +120,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide "iterate/core")
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require "iterate/pkg"))
+
 (in-package :iterate)
 
 ;(declaim (declaration declare-variables))
@@ -163,21 +167,21 @@
 
 ;;; This is like (declare (declare-variables)).
 
-(defparameter *always-declare-variables* nil)
+(defvar *always-declare-variables* nil)
 
 ;;; *result-var* is bound to a gensym before the clauses of an iterate
 ;;; form are processed.  In the generated code, the gensym is bound
 ;;; to nil before any other bindings are performed.  Clauses are free
 ;;; to generate code that sets the value of *result-var*.
 
-(defparameter *result-var* nil)
+(defvar *result-var* nil)
 
 ;;; Iterate binds *type-alist* to an alist of variables and their
 ;;; types before processing clauses.  It does this by looking at
 ;;; (declare (type ...)) forms in the clauses and recording the information
 ;;; there.  (Just variable type information, not function.)
 
-(defparameter *type-alist* nil)
+(defvar *type-alist* nil)
 
 ;;; *declare-variables* is bound to T iff the 
 ;;;            (declare (iterate:declare-variables))
@@ -187,31 +191,31 @@
 ;;; the appropriate types.  What "appropriate" means depends on the
 ;;; context. 
 
-(defparameter *declare-variables* nil)
+(defvar *declare-variables* nil)
 
 ;;; *clause* is bound to each entire iterate clause before the clause
 ;;; is processed.  Mostly for error output (see clause-error).
 
-(defparameter *clause* nil)
+(defvar *clause* nil)
 
 ;;; *top-level?* is bound to T at top-level (i.e. before any forms that
 ;;; contain clauses inside them, like IF, LET, etc.) and to NIL
 ;;; inside such forms.  It is useful to ensure that certain forms
 ;;; (particularly iteration drivers) occur only at top-level.
 
-(defparameter *top-level?* nil)
+(defvar *top-level?* nil)
 
 ;;; *binding-context?* a misnomer, should be named *declaration-context*, is
 ;;; bound to T inside a form that allows declarations (flet, labels).  We used
 ;;; to just see if *internal-variables* was non-nil, but that's wrong--you can
 ;;; be inside a binding context that binds no variables.
 
-(defparameter *binding-context?* nil)
+(defvar *binding-context?* nil)
 
 ;;; For the use of make-binding-internal, to pass back bindings.
 ;;; if-1st-time also uses it to create first-time variables.
 
-(defparameter *bindings* nil)
+(defvar *bindings* nil)
 
 
 ;;; This is a list of variable-lists containing the variables made by
@@ -223,14 +227,14 @@
 ;;;              (collect i into a)))
 ;;; is an error.
 
-(defparameter *internal-variables* nil)
+(defvar *internal-variables* nil)
 
 
 ;;; For functions (like make-binding) that don't want to or can't pass
 ;;; declarations normally.  These are really decl-specs, not full
 ;;; declarations. 
 
-(defparameter *declarations* nil)
+(defvar *declarations* nil)
 
 
 ;;; This is how we get multiple accumulations into the same variable
@@ -245,37 +249,37 @@
 ;;; Note that we do not check for type conflict in the re-use of these
 ;;; variables.
 
-(defparameter *accum-var-alist* nil)
+(defvar *accum-var-alist* nil)
 
 ;;; Shared variables created by make-shared-binding.
 ;;; It's an alist of (name gensym-var <possibly other info>).
 ;;; Tipical use is FIRST-ITERATION-P.
 
-(defparameter *shared-bindings-alist* nil)
+(defvar *shared-bindings-alist* nil)
 
 ;;; Name of the block for this iterate form.  Used in generating
 ;;; return statements.
 
-(defparameter *block-name* nil)
+(defvar *block-name* nil)
 
 ;;; The index of standard clauses (a discrimination tree).  This is a
 ;;; defvar so that reloading doesn't clobber existing defs (though it
 ;;; will clobber those clauses that are defined in this file, of
 ;;; course).
 
-(defparameter *clause-info-index* (list :index))
+(defvar *clause-info-index* (list :index))
 
-(eval-when (:compile-toplevel)
+(eval-when (:compile-toplevel :load-toplevel :execute)
   ;; This is so the variable has a value when we compile this file, since
   ;; the process of compilation results in actually setting things up.
-  (if (not (boundp '*clause-info-index*)) 
-      (setq *clause-info-index* (list :index))))
+;  (if (not (boundp '*clause-info-index*))
+      (setq *clause-info-index* (list :index)));)
 
 
 ;;; An alist of lisp special forms and the functions for handling them.
 ;;; nil as function means leave form as-is.
 
-(defparameter *special-form-alist* 
+(defvar *special-form-alist*
   '(;; First the special operators that every code walker must recognize
     (block . 		    walk-cddr) 
     (catch . 		    walk-cdr)
@@ -338,7 +342,7 @@
 ;;; For clauses that are "special" in the sense that they don't conform to the
 ;;; keyword-argument syntax of Iterate clauses.
 
-(defparameter *special-clause-alist* nil)
+(defvar *special-clause-alist* nil)
 
 
 ;;; These two are for conserving temporaries.  *temps* is a list
@@ -355,38 +359,38 @@
 ;;; (tagbody ... (let ((temp #)) (foo temp) (bar temp)) ...)
 ;;; which may be be easier for compiler data flow and lifetime analysis.
 
-(defparameter *temps* nil)
-(defparameter *temps-in-use* nil)
+(defvar *temps* nil)
+(defvar *temps-in-use* nil)
 
 ;;; This is the environment, for macroexpand.
 
-(defparameter *env* nil)
+(defvar *env* nil)
 
 ;;; This is a list of information about drivers, for use by the NEXT
 ;;; mechanism. 
 
-(defparameter *driver-info-alist* nil)
+(defvar *driver-info-alist* nil)
 
 ;;; This is used by the PREVIOUS mechanism.
 
-(defparameter *previous-vars-alist* nil)
+(defvar *previous-vars-alist* nil)
 
 
 ;;; Loop labels
 
-(defparameter *loop-top* nil)
-(defparameter *loop-step* nil)
-(defparameter *loop-end* nil)
+(defvar *loop-top* nil)
+(defvar *loop-step* nil)
+(defvar *loop-end* nil)
 
 ;;; Whether a label was used, to avoid generating them.  This is so we don't
 ;;; get a warning from compilers that check for unused tags.
 
-(defparameter *loop-step-used?* nil)
-(defparameter *loop-end-used?* nil)
+(defvar *loop-step-used?* nil)
+(defvar *loop-end-used?* nil)
 
 ;;; Things that we should wrap the loop's body in
 
-(defparameter *loop-body-wrappers* nil)
+(defvar *loop-body-wrappers* nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1026,11 +1030,11 @@ Evaluate (iterate:display-iterate-clauses) for an overview of clauses"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Processing Iterate clauses.
 
-(defparameter *initial* nil)
-(defparameter *decls* nil)
-(defparameter *step* nil)
-(defparameter *final* nil)
-(defparameter *finalp* nil)
+(defvar *initial* nil)
+(defvar *decls* nil)
+(defvar *step* nil)
+(defvar *final* nil)
+(defvar *finalp* nil)
 
 (defun process-clause (clause)
   ;; This should observe the invariant that the forms it returns are
@@ -3574,7 +3578,7 @@ e.g. (DSETQ (VALUES (a . b) nil c) form)"
 
 ;;; I need something that's a cross between gensym and gentemp...
 
-(defparameter *genvar-counter* 0)
+(defvar *genvar-counter* 0)
 
 (defun genvar (&optional (string "TEMP"))
   (prog1 (make-symbol (format nil "~a~d" string *genvar-counter*))
