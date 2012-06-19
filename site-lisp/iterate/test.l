@@ -1531,7 +1531,7 @@
       (iter::remove-clause '(multiply.clause &optional INTO))))
   nil)
 
-(iter:defmacro-clause (for var IN-WHOLE-VECTOR.clause v)
+(iter:defmacro-clause (for var in-whole-vector.clause v)
   "All the elements of a vector (disregards fill-pointer)"
   (let ((vect (gensym "VECTOR"))
         (index (gensym "INDEX")))
@@ -1541,7 +1541,7 @@
        (for ,var = (aref ,vect ,index)))))
 
 (deftest in-whole-vector.clause
-    (iter (for i IN-WHOLE-VECTOR.clause (make-array 3 :fill-pointer 2
+    (iter (for i in-whole-vector.clause (make-array 3 :fill-pointer 2
 					 :initial-contents '(1 2 3)))
 	  (collect i))
   (1 2 3))
@@ -1552,7 +1552,7 @@
 	  (collect i))
   (1 2))
 
-(iter:defmacro-driver (for var IN-WHOLE-VECTOR v)
+(iter:defmacro-driver (for var in-whole-vector v)
   "All the elements of a vector (disregards fill-pointer)"
    (let ((vect (gensym "VECTOR"))
          (end (gensym "END"))
@@ -1567,20 +1567,20 @@
                                (aref ,vect ,index))))))
 
 (deftest in-whole-vector.driver
-    (iter (for i IN-WHOLE-VECTOR (make-array '(3) :fill-pointer 2
+    (iter (for i in-whole-vector (make-array '(3) :fill-pointer 2
 					     :initial-contents '(1 2 3)))
 	  (collect i))
   (1 2 3))
 
 (deftest in-whole-vector.generate
-    (iter (generating i IN-WHOLE-VECTOR (make-array '(3) :fill-pointer 2
+    (iter (generating i in-whole-vector (make-array '(3) :fill-pointer 2
 						    :initial-contents '(1 2 3)))
 	  (collect (next i)))
   (1 2 3))
 
 (deftest defclause-sequence
     (progn
-      (iter:defclause-sequence IN-WHOLE-VECTOR.seq INDEX-OF-WHOLE-VECTOR
+      (iter:defclause-sequence in-whole-vector.seq index-of-whole-vector
 	:access-fn 'aref
 	:size-fn '#'(lambda (v) (array-dimension v 0))
 	:sequence-type 'vector
@@ -1593,20 +1593,20 @@
   t)
 
 (deftest in-whole-vector.seq
-    (iter (for i IN-WHOLE-VECTOR.seq (make-array '(3) :fill-pointer 2
+    (iter (for i in-whole-vector.seq (make-array '(3) :fill-pointer 2
 						 :initial-contents '(1 2 3)))
 	  (collect i))
   (1 2 3))
 
 (deftest in-whole-vector.seq.index
-    (iter (for i INDEX-OF-WHOLE-VECTOR
+    (iter (for i index-of-whole-vector
 	       (make-array 3 :fill-pointer 2 :initial-contents '(1 2 3)))
 	  (for j previous i :initially 9)
 	  (collect (list j i)))
   ((9 0)(0 1)(1 2)))
 
 (deftest in-whole-vector.seq.with-index
-    (iter (for e IN-WHOLE-VECTOR.seq
+    (iter (for e in-whole-vector.seq
 	       (make-array '(3) :fill-pointer 2 :initial-contents '(a b c))
 	       :with-index i)
 	  (for j previous i :initially 9)
@@ -1614,7 +1614,7 @@
   ((9 0 a)(0 1 b)(1 2 c)))
 
 (deftest in-whole-vector.seq.generate
-    (iter (generate e IN-WHOLE-VECTOR.seq
+    (iter (generate e in-whole-vector.seq
 	       (make-array 3 :fill-pointer 2 :initial-contents '(a b c))
 	       :with-index i)
 	  (collect (list (next e) e i)))
