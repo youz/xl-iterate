@@ -26,7 +26,9 @@
 	   #:maximize #:minimize #:maximizing #:minimizing #:counting
 	   #:always #:never #:thereis #:finding #:collect #:collecting
 	   #:with #:while #:until #:adjoining #:nconcing #:appending
-	   #:nunioning #:unioning #:reducing #:accumulate #:accumulating))
+	   #:nunioning #:unioning #:reducing #:accumulate #:accumulating
+	   #:install
+   ))
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
@@ -34,6 +36,12 @@
   )
 
 (in-package :iterate)
+
+(defun install (&optional (package *package*) &key excludes)
+  (do-external-symbols (s :iterate)
+    (unless (or (eq s 'install) (find s excludes :tes #'string-equal))
+      (shadowing-import (list s) package)))
+  t)
 
 ;;; work around sbcl's obnoxious standard compliance
 
